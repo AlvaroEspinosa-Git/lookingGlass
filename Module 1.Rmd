@@ -1,0 +1,223 @@
+---
+title: "Intro to R Workshop - Module 1"
+output: html_document
+date: "2025-05-21"
+---
+
+# **Module 1: Data types and Data structures**
+
+## In this first module, we will see different data types that R can handle.
+
+## These data types are stored in different data structures. We will briefly go over a few data structures before getting to the data frame, which is the main structure that we will work with in the workshop.
+
+
+## **Data Types**
+
+## The most commonly used data types are: (1) numeric or double, (2) strings (i.e., words/characters), and (3) logicals.
+
+
+## 1. Numeric
+
+```{r}
+# We can define variable x to be a number as follows:
+x <- 1.2345
+x
+# We can choose any variable name (with some limits, for example, no spaces):
+my_favorite_number <- 2
+my_favorite_number
+
+# With numerics, R can perform mathematical operations like +, -, /, *, exp(), log(), etc...
+log(2)
+x / 2
+```
+
+## 2. Strings
+
+```{r}
+# These are variables that hold characters. To define a string, we use " ":
+day <- "Monday"
+day 
+weather <- "Rainy :("
+weather
+```
+
+## 3. Logicals
+
+```{r}
+# These work for binary TRUE/FALSE data. They are used to check conditions (e.g., greater than or equal to >=, less than <, etc...)
+did_it_rain = TRUE 
+did_it_rain
+
+# Not statement
+!did_it_rain
+
+did_it_snow = FALSE
+
+# Did it rain and snow? Use the AND operator: &
+rain_and_snow <- did_it_rain & did_it_snow
+rain_and_snow
+
+# Did it rain OR did it snow? Use OR operator: |
+rain_or_snow <- did_it_rain | did_it_snow
+rain_or_snow
+
+# We can use == to check for equality:
+my_favorite_number == 2
+
+# Note the distinction: "=" assigns the value on the right side to the variable 
+# on the left
+my_favorite_number == 2
+# "==" checks for equality
+```
+
+
+## Exercise 1
+
+```{r}
+# (1) Use the less than operator < to verify whether x is less than my_favorite_number
+#     (save this result and print it)
+
+# (2) Find the logical variables in the environment and check whether NOT one of them is TRUE
+
+# (3) Define a string variable and print it
+
+
+```
+
+## There are other data types, such as integers and complex numbers, but we will not be covering them here.
+
+## factors are another data type that is used for categorical data analysis. We will see this later.
+
+
+## **Data Structures**
+
+## Data Structures are objects used to store elements in R.
+## We will introduce quickly vectors, matrices, and briefly mention lists before moving on the data frames which are the topic of the next module.
+
+
+## 1. Vectors
+
+```{r}
+# These objects hold a sequence of elements of the same data type (e.g., a series of numbers or words/strings)
+
+# We can create vectors using the concatenate function c() to combine different elements together
+# For example:
+my_favorite_numbers <- c(2, 7, 11, 100, 20)
+days <- c("Monday", "Tuesday", "Wednesday")
+
+my_favorite_numbers
+days
+
+# We can also create vectors using the repeat rep() function and the sequence seq() function.
+# For information and examples, you can run help(rep) and help(seq).
+help(seq)
+```
+
+
+## 2. Matrices
+
+```{r}
+# Matrices are 2-d data structures that hold elements of the same data type.
+# There are indexed by rows and columns. They are created using the matrix function.
+
+mat <- matrix(c(1,2,3,4,5,6,7,8,9), nrow = 3, ncol = 3)
+mat
+
+mat_2 <- matrix(c(1,0,0,4,0,0,7,0,0), nrow = 3, ncol = 3)
+
+# Mathematical operations for vectors and matrices occurs elements wise.
+mat
+mat - mat_2
+```
+
+
+## 3. Data Frames
+
+```{r}
+# Data frames are also 2-d data structures with rows and columns.
+# However, unlike matrices, data frames can hold elements of different data types.
+# They are typically used for data analysis where a column represents a feature of the dataset.
+
+# They are made using the data.frame function and passing in vectors representing 
+# the features of our dataset
+restaurant_df <- data.frame(weekday = c("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"),
+                 num_of_waiters =c(2, 2, 2, 3, 5, 5, 3),
+                 num_of_cooks = c(2, 2, 2, 2, 4, 4, 2),
+                 customers = c(55, 44, 50, 75, 150, 150, 60))
+restaurant_df
+
+# Alternatively, we can define the data frame from vectors in our environment.
+
+# Let's make some vectors first.
+vec1 <- c("Albert", "Bryan", "Carl", "Dan")
+vec2 <- c("Guitar", "Drums", "Piano", "Guitar")
+vec3 <- c(4, 3.76, 3.5, 3.9)
+
+Music_students_df <- data.frame(Name = vec1,
+                                 Instrument = vec2,
+                                 GPA = vec3)
+Music_students_df
+
+# As we will see, it is easy to manipulate data frames and compute transformations of our columns.
+
+# This begs the question: If matrices and vectors are data frames with limitations on data types, why use them?
+# Answer: They are computationally more efficient. If you are writing algorithms or need linear algebra, you should be working with vectors and matrices. 
+
+# For most data analysis and visualizations, we generally don't need to worry about computing resources and will be using data frames.
+```
+
+## Exercise 2
+
+```{r}
+# (1) A mathematical operation between a single numeric element and a vector or a matrix will perform that for each element in the vector or matrix.
+
+# i) Try running 1 + mat. 
+
+# ii) Find a numeric variable in your environment. Add that variable to mat and save the 
+#     results as an object called new_mat.
+
+# iii) Divide new_mat by a number such that all of its values are between -1 and 1.
+
+#(2)
+# i) seq(from = 1, to = 100, by = 1) generates the sequence 1,2, ..., 99, 100.
+#    Use seq() to generate the vector -100, -98, -96, ..., 98, 100.
+#    Save the results in a vector called plus_minus_100_seq
+
+# ii) Create a vector that holds the numbers 100, 0, 1, 2 ,..., 100.
+#     Hint: use the concatenate function c() and the seq() function.
+```
+
+
+## 4. Lists
+
+```{r}
+# Lists allows you to store different data types and structures together in a single object
+
+list_example = list(vec = c(1,2,3), string = 'word', matrix = mat)
+
+# We can then access elements of the list with the '$' operator:
+list_example$vec
+list_example$matrix
+
+# or we can access them by their index number
+list_example[[1]] # returns vec
+list_example[[2]] # returns string
+list_example[[3]] # returns matrix
+
+
+# "Lists" will come in handy later when we write functions and we want multiple outputs.
+
+```
+
+
+## Exercise 3
+
+```{r}
+# 1) We can check the number of items in a list by passing it to length() function.
+# For example running the command length(list_example) returns the number of elements in a given list. 
+# Try running length(list_example)
+
+
+# 2) We can get the names of elements in a list by passing it to names() function.
+# Try running names(list_example)
+```

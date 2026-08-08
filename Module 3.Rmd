@@ -1,0 +1,264 @@
+---
+title: "Intro to R - Module 3"
+output: html_document
+date: "2025-05-21"
+---
+
+# **Module 3: Plotting with ggplot**
+
+## In this script, we will explore how to use the `ggplot2` to create and customize plots. 
+
+## `gg` stands for "Grammar of Graphics," which is a framework towards producing quantitative graphics espoused in a book by Leland Wilkinson:
+
+## Wilkinson, L. (2005). The Grammar of Graphics. (2 Ed.). Springer. https://www.doi.org/10.1007/0-387-28695-0
+
+## `ggplot` is a package of plotting functions that aims to apply this framework is R:
+
+## https://ggplot2.tidyverse.org/
+
+
+
+## Installation
+
+```{r}
+#install.packages("ggplot2")
+library(ggplot2)
+```
+
+
+## Practice Dataset
+
+```{r}
+# We are going to use titanic library to creat plots
+
+# Titanic data
+#install.packages("titanic")
+library(titanic)
+
+# Tibble
+library(dplyr)
+titanic <- as_tibble(titanic_train)
+
+
+# ggplot works in layers
+# We start with a blank canvas
+ggplot(titanic, aes(x = Age, y = Fare))
+
+# We specified which dataset we want (i.e., titanic) and
+# set our X and Y axes.
+
+# Next, we can add some layers using '+' and various other functions
+# For example, we can add a layer to add points in the form of (Age,Fare) to this plot.
+
+ggplot(titanic, aes(x = Age, y = Fare))+
+  geom_point()
+
+# The layer we just added draws a scatter plot on the canvas that we made earlier.
+# We will see additional functions/layers to change to plot title, labels, colors, add more graphics onto the plot, and much more. By going layer by layer, ggplot gives users a lot of flexibility. 
+
+
+# geom_ ... is a common structure for ggplot's different plot types.
+# We find:
+# geom_histogram(), geom_boxplot(), geom_bar(), geom_point(), geom_line()
+# among other kinds of plot in the package (see cheatsheet for more examples).
+
+# Let's see some examples:
+ggplot(titanic, aes(x = Age, y = Fare))+
+  geom_line()
+
+ggplot(titanic, aes(x = Age, y = Fare))+
+  geom_smooth()
+
+# Some single variable plots:
+ggplot(titanic, aes(x = Age))+
+  geom_histogram()
+
+ggplot(titanic, aes(x = Age))+
+  geom_boxplot()
+
+# Or can flip the boxplot, if you prefer
+ggplot(titanic, aes(x = Age))+
+  geom_boxplot()+
+  coord_flip()
+
+# Using + we can add even more layers and combine plots that we've seen.
+ggplot(titanic, aes(x = Age, y = Fare))+
+  geom_point() +
+  geom_line()
+
+ggplot(titanic, aes(x = Age, y = Fare))+
+  geom_point()+
+  geom_smooth()
+
+# We can add color to data points based on the levels in another variable:
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point()+
+  geom_smooth()
+```
+
+
+## Data Points
+
+```{r}
+# You can change the size of data points:
+ggplot(titanic, aes(x = Age, y = Fare, color = as.factor(Survived)))+
+  geom_point(size = 2.5)+
+  geom_smooth(alpha = .5)
+
+# Or you can change the type of points: 
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point(shape = 6)+
+  geom_smooth()
+
+# See a full list of shape at: 
+# https://www.r-bloggers.com/2021/06/r-plot-pch-symbols-different-point-shapes-in-r/
+```
+
+
+## Labels
+
+```{r}
+# You can add label to your plots by labs() function as follows:
+
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point(shape = 6) +
+  labs(title = "Scatterplot of Age and Fare on the Titanic by Sex",
+       x = "Age in Years",
+       y = "Fare Paid in $",
+       subtitle = "Includes all recorded passengers of the Titanic",
+       caption = "Created at Data Vis workshop")
+```
+
+
+## Themes
+
+```{r}
+# We can control the theme of the graphs
+# The layer theme_* can be used for this purpose.
+
+
+# The classic dark-on-light ggplot2 theme
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point(shape = 6) +
+  labs(title = "Scatterplot of Age and Fare on the Titanic by Sex",
+       x = "Age in Years",
+       y = "Fare Paid in $",
+       subtitle = "Includes all recorded passengers of the Titanic",
+       caption = "Created at Data Vis workshop")+
+  theme_bw()
+
+
+# A void theme
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point(shape = 6) +
+  labs(title = "Scatterplot of Age and Fare on the Titanic by Sex",
+       x = "Age in Years",
+       y = "Fare Paid in $",
+       subtitle = "Includes all recorded passengers of the Titanic",
+       caption = "Created at Data Vis workshop")+
+  theme_light()
+
+
+# Many more, you can see them at the help documentation. 
+# Run help("theme_bw")
+```
+
+
+## Exercise 1
+
+```{r}
+# In this exercise, we work with iris dataset available at datasets packages. 
+# Take your time and read the help documentation for this dataset. 
+# You can find it by running help(iris) or ?iris in the console.
+# After that, start working on the following parts.
+
+# Part 1) use ggplot to draw a scatterplot where the length of Sepal is on the x-axis and width of Sepal is on the y-axis.
+
+
+# Part 2) Color the data points in the plot based on the values in Species column.
+
+
+# Part 3) Increase the point size to a larger value (your choice of value) and add some label to your plot.
+
+
+# Part 4) Note that Species column have three unique values 
+# (You can verify this by running unique(iris$Species) command line in console)
+# Suppose now we want to plot data only for "setosa" and "versicolor".
+# Use what we learned in this workshop to: 
+# (i) Select the rows that match this condition, using dplyr functionality.
+# (ii) Save this in a new object called iris.new
+# (iii) Repeat parts 1 to 3.
+```
+
+
+## Changing the colour and label of different categories
+
+```{r}
+# No we want to see how we can change the colour and label of different categories of a variable
+
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point()+
+  geom_smooth()+
+  scale_color_manual(values = c("male" = "orange", "female" = "blue"),                      
+                     labels = c("female" = "Female", "male" = "Male"))
+
+
+# Changing the colour in histogram
+ggplot(titanic, aes(x = Age)) +
+  geom_histogram(col = "black", fill = "darkred")
+```
+
+
+## Rescaling
+
+```{r}
+ggplot(titanic, aes(x = Age, y = Fare)) +
+  geom_point()+
+  scale_x_continuous(limits = c(0,90), breaks = seq(0,90,10)) + 
+  scale_y_continuous(limits = c(0,300), breaks = seq(0,300,100))
+```
+
+
+## Export
+
+```{r}
+ggplot(titanic, aes(x = Age, y = Fare, color = Sex))+
+  geom_point(shape = 1) +
+  labs(title = "Scatterplot of Age and Fare on the Titanic by Sex",
+       x = "Age in Years",
+       y = "Fare Paid in $",
+       subtitle = "Includes all recorded passengers of the Titanic",
+       caption = "Created at Data Vis workshop")+
+  scale_color_manual(values = c("male" = "red", "female" = "blue"),                      
+                     labels = c("female" = "Female", "male" = "Male")) -> titanic.plot
+  
+ggsave("titanicscatterplot.png", titanic.plot, width = 6.5, height = 6.5, units = "in", dpi = 300)
+```
+
+
+## Exercise 2
+
+```{r}
+# In this exercise, we work with iris dataset available at datasets packages. 
+# Take your time and read the help documentation for this dataset. 
+# You can find it by running help(iris) or ?iris in the console.
+# After that, start working on the following parts.
+
+# Part 1) use ggplot to draw a scatterplot where the length of Sepal is on the x-axis and width of Sepal is on the y-axis.
+
+
+# Part 2) Color the data points in the plot based on the values in Species column.
+
+
+# Part 3) Increase the point size to a larger value (your choice of value) and add some label to your plot.
+
+
+# Part 4) Note that Species column have three unique values 
+# (You can verify this by running unique(iris$Species) command line in console)
+# Suppose now we want to plot data only for "setosa" and "versicolor".
+# Use what we learned in this workshop to: 
+# (i) Select the rows that match this condition, using dplyr functionality.
+# (ii) Save this in a new object called iris.new
+# (iii) Repeat parts 1 to 3.
+```
+

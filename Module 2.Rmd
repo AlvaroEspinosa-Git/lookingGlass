@@ -1,0 +1,267 @@
+---
+title: "Intro to R - Module 2"
+output: html_document
+date: "2025-05-21"
+---
+
+# **Module 2: Data Frames**
+
+## In the previous module, we learned how to create a DataFrame in R. Now, we want to dig deeper in that!
+
+## Reminder 
+
+```{r}
+# Recall the restaurant_df. 
+# Go ahead and run the following code to make sure you have it in the environment. 
+
+restaurant_df <- data.frame(weekday = c("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"),
+                            num_of_waiters =c(2, 2, 2, 3, 5, 5, 3),
+                            num_of_cooks = c(2, 2, 2, 2, 4, 4, 2),
+                            customers = c(55, 44, 50, 75, 150, 150, 60))
+restaurant_df
+```
+
+
+## **Subsetting Data Frames Using Brackets**
+
+```{r}
+# Note that any DataFrame consists of rows and columns. 
+# You can use [,] to access row(s) or column(s) in any DataFrame. 
+# The general format is: Your_Data_Frame[row, column] 
+# The first number in the brackets (row) represents the row number, and the second number in the brackets (column) represents the column number.
+
+# For example, to select the element in the third row and first column, use restaurant_df[3, 1] as follows:
+restaurant_df[3,1]
+
+
+# We can also select couple of rows at the same time (and return all the columns).
+
+# For example, to return the first 4 rows of the DataFrame we can run:
+restaurant_df[1:4,]
+# or:
+restaurant_df[c(1,2,3,4),]
+
+# or return couple of columns (while returning all the rows):
+restaurant_df[,1:2]
+restaurant_df[,c(1,2)]
+
+```
+
+
+## **Subsetting Data Frames Using $**
+
+```{r}
+# It is common to extract/select one column in a DataFrame to run some descriptive analysis.
+# Beside the method described above, a more common method is to use $ (dollar sign) to select a variable.
+
+# General idea is to use $ (dollar sign) as Your_Data_Frame$Name_of_the_column
+restaurant_df$customers
+
+# Using '$' with a new column name allows us to add columns to the data frame.
+restaurant_df$customers_per_waiter <- restaurant_df$customers / restaurant_df$num_of_waiters
+
+# We can subset certain rows of "customers" column based on specific criteria.
+# For instance, if we want to identify the days of the week when the restaurant had more than 70 customers, 
+# we can achieve this using the subset function:
+subset(restaurant_df, customers > 70)
+
+# Or alternatively you can use Logicals from the previous module as follows:
+# (This gives the row where restaurant_df$customers > 70 is TRUE and all columns in the data frame)
+restaurant_df[restaurant_df$customers > 70,]
+
+# Note that when you print a DataFrame, the columns have a name (attribute).
+# We can change the names in the columns of a DataFrame if we want to.
+# First note that colnames returns a vector of names with the same size as the number of columns.
+colnames(restaurant_df)
+
+# We can now assign new names to the columns of DataFrame 
+colnames(restaurant_df) <- c('Weekday', 'Number_of_waiters', 'Number_of_cooks', 'Customers')
+```
+
+
+## Some useful functions for data frames
+
+```{r}
+# Sometimes data frames are very large and is too large to practically view in the console. We have a few options here.
+
+# Let's make a DataFrame with 1000 rows.
+long.data.frame <- data.frame(x=1:1000, y=1001:2000, z=1000:1)
+
+# Displays first 6 rows; useful when you just want to see a short sample of the DataFrame together.
+head(long.data.frame)
+head(long.data.frame, n = 10)
+
+# Displays last 6 rows
+tail(long.data.frame) 
+
+# RStudio brings up an interface you can scroll through
+View(long.data.frame) 
+
+# Get the number of rows and columns of a Data.Frame
+ncol(long.data.frame)
+nrow(long.data.frame)
+dim(long.data.frame)
+```
+
+
+## Exercise 1
+
+```{r}
+# 1.Add a column customers per cook to the restaurant data frame by dividing the number of customers by the number of cooks.
+
+
+# 2. Create a data.frame that looks like this:
+# (Hint: take the advantages of rep() function. You can read more about this function by running help(rep) or ?rep in terminal)
+
+
+# Tester    Food        Tastiness
+#
+#  Joel     Apple           8
+#  Joel     Chocolate       4
+#  Joel     Bubblegum       7
+#  Bob      Apple           3
+#  Bob      Chocolate       10
+#  Bob      Bubblegum       8 
+#  Jane     Apple           6
+#  Jane     Chocolate       6
+#  Jane     Bubblegum       7
+
+
+# 3. (i)   Show only the rows where Bob was the tester.
+#    (ii)  Show only the rows where the Food was 'Bubblegum'
+#    (iii) Show only the rows where the tastiness score was 7 or greater.
+
+
+#   (iv) It turns out that Jane's name was mistyped; she's actually Janet! Change 'Jane' to 'Janet'.
+
+
+# 4. (i) Select Tastiness variable.
+#    (ii) Calculate the mean (average) of Tastiness score.
+#    (iii) Use summary function to obtain 5-number summary of Tastiness variable.
+
+```
+
+
+## **Tibbles - Tidyverse Package**
+
+```{r}
+# Tibbles are an advanced version of data frames in R. 
+# Tibbles are essentially data frames but they were built with the idea of making our coding life easier!
+# For more info on tibbles, see: https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html
+
+# Let's start by installing tidyverse package so that we can work with tibbles.
+library(tidyverse)
+
+
+# For our data today, I will be showing examples using open-sources data so that everyone can access it easily
+# We'll be using the open-source titanic dataset which can easily be accessed by installing a package called 'titanic'
+library('titanic')
+
+# The dataset is called titanic_train. You can see this information yourself by going to the help file for titanic_train
+?titanic_train
+
+# Let us convert this into a tibble by the following line of code: 
+titanic <- as_tibble(titanic_train)
+
+# Note that I got a "copy" of this tibble and saved it with the name titanic (just for convenience and avoid writing in the original data).
+titanic 
+View(titanic)
+
+
+# We can use tidyverse package functionality for a couple of common explanatory data analysis activities:
+
+
+# a) Filter: extract rows based on a condition
+filter(titanic, Age >= 18)
+filter(titanic, (Age >= 18) & (Survived == 1) )
+filter(titanic, (Age >= 18) | (Survived == 1) )
+
+
+# b) Select: choose some columns
+select(titanic, Survived, Pclass, Name, Sex, Age)
+select(titanic, Survived:Age)
+
+
+# c) Remove NA values: remove any rows with any NA in any column
+drop_na(titanic)
+
+
+# d) Sort: order based on a column
+arrange(titanic, Fare)       # ascending order
+arrange(titanic, desc(Fare)) # descending order
+
+# e) summarize: compute some descriptive from tibble
+summarize(titanic, Average_Age = mean(Age))
+summarize(titanic, Average_Age = mean(Age), SD_Age = sd(Age))
+```
+
+
+## Exercise 2
+
+```{r}
+#  We are going to work with nycflights dataset: On-time data for a random sample of flights that departed NYC 
+# (i.e. JFK, LGA or EWR) in 2013.
+# Start by installing the package to access data:
+
+library(openintro)
+head(nycflights)
+
+# For this dataset, work on the followings:
+
+# a) filter the records of this tibble for flights that headed to LAX. Save this as a new tibble called LAX_flights.
+
+# Use this tibble to answer the following parts.
+
+# b) Compute the mean and median of departure delay for all flights departing to LAX. 
+
+# c) Compare the mean of delay in departure time between the months of December and March. Which month had the highest delay?
+
+# d) Find the flights that departed the airport earlier than the time they were supposed to?
+```
+
+
+## Exercise 3
+
+```{r}
+# Create a vector called X that is length 100 and repeats 1, 2, 3, 4.
+# X should look like 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, ...
+
+# Next, retrieve from x every '3' and store it into Y.
+
+# Create a data frame that looks like this:
+
+#Food          Calories    Weight     Price
+#Chocolate       240         30       1.25
+#Bubblegum       10          2        0.50
+#Apple           70          200      0.69
+
+# Make sure to also set the row and column names. Retrieve the following values from the data frame using the subsetting operator $.
+
+# The price of an apple
+
+# The calories in bubblegum
+
+# The weight of all the foods
+
+# The calories and weight of all the foods
+
+# The number of calories per unit weight (divide the Calories column by the Weight column)
+```
+
+
+## Exercise 4
+
+```{r}
+# For this part, you are going to work with airquality dataset.
+data("airquality")
+
+# Explore the dataset using some functions like view, help, head, etc.
+
+# Calculate the mean temperature for months May and June.
+
+# Filter the days where the temperature was above 77°F and store this new data frame in an object called Warm_days.
+
+# Filter the dataset to include only rows where temperature is between 50°F and 70°F.
+
+# Select the first three columns, and filter rows where wind is greater than 10 mph.
+```
